@@ -1,187 +1,94 @@
 # Employee-Performance-and-Retention-Analysis
 Employee Performance and Retention Analysis is an HR analytics project that studies employee data to identify performance trends and predict attrition. It uses data cleaning, visualization, and machine learning to help organizations improve productivity, reduce turnover, and make better retention decisions.
 
-# Employee Performance and Retention Analysis
-# Complete End-to-End Project Code
+## Project Overview
 
-# ================================
-# Phase 0: Import Required Libraries
-# ================================
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+In many organizations, retaining skilled employees is a major challenge. This project helps analyze employee data to understand why employees may leave the company and what factors affect their performance. It uses data preprocessing, visualization, and machine learning techniques to generate useful insights for HR decision-making.
 
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler, MinMaxScaler
-from sklearn.linear_model import LogisticRegression, LinearRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.metrics import mean_squared_error, r2_score
+## Objectives
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+- Analyze employee performance data
+- Identify factors affecting employee retention
+- Detect patterns related to employee attrition
+- Visualize important HR metrics
+- Build a basic predictive model for employee retention
+- Help organizations improve employee satisfaction and reduce turnover
 
-# ================================
-# Phase 1: Data Collection & EDA
-# ================================
+## Features
 
-# Load dataset
-df = pd.read_csv('employee_data.csv')
+- Data cleaning and preprocessing
+- Exploratory Data Analysis
+- Employee performance analysis
+- Attrition and retention analysis
+- Data visualization using charts and graphs
+- Machine learning model for prediction
+- Accuracy evaluation of the model
 
-# Basic inspection
-print(df.head())
-print(df.info())
-print(df.describe())
+## Technologies Used
 
-# Handle missing values
-df.fillna(method='ffill', inplace=True)
+- Python
+- Pandas
+- NumPy
+- Matplotlib
+- Seaborn
+- Scikit-learn
+- Jupyter Notebook / Python IDE
 
-# Remove duplicates
-df.drop_duplicates(inplace=True)
+## Dataset
 
-# ================================
-# Exploratory Data Analysis (EDA)
-# ================================
+The dataset contains employee-related information such as:
 
-# Descriptive statistics
-print("Mean:\n", df.mean(numeric_only=True))
-print("Median:\n", df.median(numeric_only=True))
-print("Standard Deviation:\n", df.std(numeric_only=True))
+- Employee ID
+- Age
+- Department
+- Job Role
+- Monthly Income
+- Job Satisfaction
+- Work Experience
+- Performance Rating
+- Attrition Status
+- Years at Company
+- Work-Life Balance
 
-# Pairplot
-sns.pairplot(df.select_dtypes(include=np.number))
-plt.show()
+## Project Workflow
 
-# Correlation heatmap
-plt.figure(figsize=(8,6))
-sns.heatmap(df.corr(numeric_only=True), annot=True, cmap='coolwarm')
-plt.title('Correlation Heatmap')
-plt.show()
+1. Import required libraries
+2. Load the dataset
+3. Clean and preprocess the data
+4. Handle missing values
+5. Convert categorical data into numerical format
+6. Perform exploratory data analysis
+7. Visualize employee performance and retention trends
+8. Split data into training and testing sets
+9. Train machine learning model
+10. Evaluate model performance
 
-# Boxplot for outlier detection
-for col in df.select_dtypes(include=np.number).columns:
-    plt.figure()
-    sns.boxplot(x=df[col])
-    plt.title(f'Boxplot of {col}')
-    plt.show()
+## Machine Learning Models Used
 
-# ================================
-# Probability & Statistical Analysis
-# ================================
+- Logistic Regression
+- Decision Tree Classifier
+- Random Forest Classifier
 
-# Probability of attrition
-attrition_prob = df['Attrition'].value_counts(normalize=True)
-print("Attrition Probability:\n", attrition_prob)
+## Output
 
-# Probability of attrition given performance score below threshold
-low_perf = df[df['PerformanceScore'] < df['PerformanceScore'].mean()]
-prob_attrition_low_perf = low_perf['Attrition'].value_counts(normalize=True)
-print("Attrition Probability (Low Performance):\n", prob_attrition_low_perf)
+The project provides useful insights such as:
 
-# ================================
-# Phase 2: Feature Engineering
-# ================================
+- Which department has higher attrition
+- How job satisfaction affects retention
+- Relationship between salary and employee performance
+- Impact of work-life balance on attrition
+- Prediction of whether an employee may stay or leave
 
-# Encode categorical variables
-le = LabelEncoder()
-df['Department'] = le.fit_transform(df['Department'])
-df['Attrition'] = le.fit_transform(df['Attrition'])
+## How to Run the Project
 
-# Feature scaling
-scaler = StandardScaler()
-df[['Salary', 'PerformanceScore']] = scaler.fit_transform(df[['Salary', 'PerformanceScore']])
+1. Clone this repository:
 
-# ================================
-# Attrition Prediction - Classification
-# ================================
+```bash
+git clone https://github.com/your-username/Employee-Performance-and-Retention-Analysis.git
 
-X = df.drop(['Attrition', 'EmployeeID', 'Name'], axis=1)
-y = df['Attrition']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Logistic Regression model
-clf = LogisticRegression(max_iter=1000)
-clf.fit(X_train, y_train)
-
-y_pred = clf.predict(X_test)
-
-print("Accuracy:", accuracy_score(y_test, y_pred))
-print("Precision:", precision_score(y_test, y_pred))
-print("Recall:", recall_score(y_test, y_pred))
-print("F1 Score:", f1_score(y_test, y_pred))
-
-# Confusion Matrix
-cm = confusion_matrix(y_test, y_pred)
-sns.heatmap(cm, annot=True, fmt='d')
-plt.title('Confusion Matrix')
-plt.show()
-
-# ================================
-# Performance Prediction - Regression
-# ================================
-
-X_perf = df.drop(['PerformanceScore', 'EmployeeID', 'Name'], axis=1)
-y_perf = df['PerformanceScore']
-
-X_train, X_test, y_train, y_test = train_test_split(X_perf, y_perf, test_size=0.2, random_state=42)
-
-reg = LinearRegression()
-reg.fit(X_train, y_train)
-
-y_pred = reg.predict(X_test)
-
-print("R2 Score:", r2_score(y_test, y_pred))
-print("MSE:", mean_squared_error(y_test, y_pred))
-
-# Actual vs Predicted
-plt.scatter(y_test, y_pred)
-plt.xlabel('Actual Performance')
-plt.ylabel('Predicted Performance')
-plt.title('Actual vs Predicted Performance')
-plt.show()
-
-# ================================
-# Phase 3: Deep Learning Models
-# ================================
-
-# Deep Learning - Performance Prediction
-model = Sequential([
-    Dense(32, activation='relu', input_shape=(X_train.shape[1],)),
-    Dense(16, activation='relu'),
-    Dense(1)
-])
-
-model.compile(optimizer='adam', loss='mse')
-model.fit(X_train, y_train, epochs=50, batch_size=16, verbose=0)
-
-loss = model.evaluate(X_test, y_test)
-print("Deep Learning MSE:", loss)
-
-# Deep Learning - Attrition Prediction
-X_dl = df.drop(['Attrition', 'EmployeeID', 'Name'], axis=1)
-y_dl = df['Attrition']
-
-X_train, X_test, y_train, y_test = train_test_split(X_dl, y_dl, test_size=0.2, random_state=42)
-
-model_dl = Sequential([
-    Dense(32, activation='relu', input_shape=(X_train.shape[1],)),
-    Dense(16, activation='relu'),
-    Dense(1, activation='sigmoid')
-])
-
-model_dl.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-model_dl.fit(X_train, y_train, epochs=50, batch_size=16, verbose=0)
-
-_, accuracy = model_dl.evaluate(X_test, y_test)
-print("Deep Learning Attrition Accuracy:", accuracy)
-
-# ================================
-# Phase 4: Insights
-# ================================
-print("\nKey Insights:")
-print("- Salary and performance strongly influence attrition.")
-print("- Certain departments show higher attrition risk.")
-print("- Performance can be predicted effectively using ML and DL models.")
+Employee-Performance-and-Retention-Analysis
+│
+├── Employee-Performance-and-Retention-Analysis.py
+├── dataset.csv
+├── README.md
+└── requirements.txt
